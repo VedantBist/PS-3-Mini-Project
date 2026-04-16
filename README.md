@@ -109,7 +109,14 @@ Useful options:
 
 ## Run Instructions
 
+Prerequisites:
+- Python 3.10+
+- Node.js 18+
+- npm
+
 ## 1. Start Backend
+
+### macOS/Linux
 
 ```bash
 cd backend
@@ -119,11 +126,30 @@ pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
 
+### Windows PowerShell
+
+```powershell
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+If PowerShell blocks virtual environment activation, run this in the same terminal and then activate again:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
 Backend API docs: `http://localhost:8000/docs`
 
 ## 2. Start Frontend
 
 Open a new terminal:
+
+### macOS/Linux and Windows
 
 ```bash
 cd frontend
@@ -135,8 +161,17 @@ Frontend: `http://localhost:5173`
 
 If needed, override backend URL:
 
+### macOS/Linux
+
 ```bash
 VITE_API_BASE_URL=http://localhost:8000 npm run dev
+```
+
+### Windows PowerShell
+
+```powershell
+$env:VITE_API_BASE_URL="http://localhost:8000"
+npm run dev
 ```
 
 ## API Endpoints (Summary)
