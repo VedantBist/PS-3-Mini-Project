@@ -5,6 +5,7 @@ __pycache__/
 *.pyd
 *.so
 .venv/
+backend/data/generated_*.csv
 
 # Node
 node_modules/

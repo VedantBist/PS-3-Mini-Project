@@ -83,6 +83,30 @@ CSV should include these columns:
 
 A sample file is available at `backend/data/sample_customers.csv`.
 
+## Generate Datasets
+
+The backend includes a dataset generator for creating larger, repeatable CSV files with realistic customer segments.
+
+```bash
+cd backend
+python generate_dataset.py --rows 1000 --output data/generated_customers.csv --seed 42
+```
+
+To test preprocessing with missing values, duplicate rows, outliers, and noisy gender labels:
+
+```bash
+python generate_dataset.py --rows 1000 --dirty --output data/generated_customers_dirty.csv
+```
+
+Useful options:
+- `--rows` - base number of customers to generate
+- `--seed` - repeatable random seed
+- `--dirty` - inject data quality issues for preprocessing tests
+- `--missing-rate` - per-cell missing value rate for dirty datasets
+- `--duplicate-rate` - duplicate row rate for dirty datasets
+- `--outlier-rate` - outlier row rate for dirty datasets
+- `--include-segment` - add a `Segment` column for manual inspection
+
 ## Run Instructions
 
 ## 1. Start Backend
