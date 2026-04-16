@@ -1,70 +1,105 @@
-# Automated Student Performance & Attendance Profiler
+# Banking Customer Segmentation Dashboard
 
-A full-stack mini project for college labs that combines React (UI) and Python (backend) to implement key data-analysis experiments in one workflow.
+A full-stack mini project for customer analytics and segmentation using FastAPI, React (Vite), Pandas, NumPy, and Scikit-learn KMeans.
 
-## Features Mapped to Experiments
+## Features
 
-- **Preprocessing (Exp 2)**
-  - Handles missing marks and `Absent`/`AB`/blank values.
-  - Imputes missing subject marks using subject-wise mean.
-  - Normalizes attendance (missing/absent => `0`, clamps to `0-100`).
+### Backend (FastAPI)
+- Upload customer CSV datasets
+- Preprocessing pipeline:
+  - Missing value handling
+  - Duplicate removal
+  - Gender encoding (`GenderEncoded`)
+- Data operations:
+  - Aggregates (`avg`, `sum`, `min`, `max`)
+  - Quantiles/percentiles
+- CRUD operations for customers
+- Filtering by age, income, and spending score
+- Statistical analysis (mean, median, std deviation)
+- KMeans clustering (3-5 clusters)
+- Export processed dataset as CSV
 
-- **Aggregates & Stats (Exp 4 & 12)**
-  - Computes student `Total`, `Average`, and `GPA`.
-  - Computes class-level `Class Average` and `Class GPA`.
-  - Computes per-subject `Average`, `Standard Deviation`, `Min`, `Max`.
-
-- **Quantile Analysis (Exp 5)**
-  - Computes percentile rank for each student.
-  - Identifies top 10% students (`Percentile >= 90`) for achievement lists.
-
-- **String Operations (Exp 14)**
-  - Formats student names to title case.
-  - Standardizes emails to lowercase.
-  - Auto-generates email if missing (`firstname.lastname@college.edu`).
-  - Generates automated remarks based on average score ranges.
-
-## Tech Stack
-
-- **Frontend:** React + Vite
-- **Backend:** Python + Flask
-- **Data Input:** CSV upload
+### Frontend (React + Tailwind + Recharts)
+- Sidebar + main dashboard layout
+- Dataset upload controls
+- Editable customer table
+- Filters for age/income/spending
+- Charts:
+  - Income vs Spending scatter plot
+  - Cluster distribution bar chart
+  - Segment share pie chart
+- Add/Edit customer modal form
+- Actions for clustering and CSV export
+- Optional light/dark mode toggle
 
 ## Project Structure
 
 ```text
-PS-Mini Project/
-├── backend/
-│   ├── app.py
-│   ├── analyzer.py
-│   ├── requirements.txt
-│   └── sample_students.csv
-├── frontend/
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.js
-│   └── src/
-│       ├── App.css
-│       ├── App.jsx
-│       └── main.jsx
-└── README.md
+backend/
+  main.py
+  requirements.txt
+  data/
+    sample_customers.csv
+  models/
+    schemas.py
+  routes/
+    dataset.py
+  services/
+    data_service.py
+
+frontend/
+  package.json
+  vite.config.js
+  tailwind.config.js
+  postcss.config.js
+  index.html
+  src/
+    App.jsx
+    main.jsx
+    index.css
+    services/
+      api.js
+    pages/
+      Dashboard.jsx
+    components/
+      Sidebar.jsx
+      UploadPanel.jsx
+      FiltersBar.jsx
+      StatsCards.jsx
+      CustomerTable.jsx
+      CustomerFormModal.jsx
+      ChartsPanel.jsx
 ```
 
-## Run the Backend
+## Dataset Format
+
+CSV should include these columns:
+- `CustomerID`
+- `Age`
+- `Gender`
+- `AnnualIncome`
+- `SpendingScore`
+- `Balance`
+
+A sample file is available at `backend/data/sample_customers.csv`.
+
+## Run Instructions
+
+## 1. Start Backend
 
 ```bash
 cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python app.py
+uvicorn main:app --reload --port 8000
 ```
 
-Backend runs on: `http://localhost:5000`
+Backend API docs: `http://localhost:8000/docs`
 
-## Run the Frontend
+## 2. Start Frontend
 
-In a new terminal:
+Open a new terminal:
 
 ```bash
 cd frontend
@@ -72,52 +107,24 @@ npm install
 npm run dev
 ```
 
-Frontend runs on: `http://localhost:5173`
+Frontend: `http://localhost:5173`
 
-If backend is running on a different port (for example `5050`), run:
+If needed, override backend URL:
 
 ```bash
-VITE_API_BASE_URL=http://localhost:5050 npm run dev
+VITE_API_BASE_URL=http://localhost:8000 npm run dev
 ```
 
-## CSV Format
+## API Endpoints (Summary)
 
-Minimum required:
-
-- `Name`
-- One or more subject columns (e.g., `Math`, `Physics`)
-
-Optional:
-
-- `Email`
-- `Attendance`
-
-Example:
-
-```csv
-Name,Email,Attendance,Math,Physics,Chemistry,English
-Rahul Sharma,rahul@college.edu,92,88,91,Absent,79
-Ananya Singh,,97,95,89,93,90
-```
-
-A ready sample file is available at:
-
-- `backend/sample_students.csv`
-
-## API Endpoints
-
-- `GET /health` -> service status
-- `POST /analyze` -> analyze uploaded CSV file (`multipart/form-data`, field name: `file`)
-
-## UI Highlights
-
-- Upload CSV and process instantly.
-- Summary cards for class-level KPIs.
-- Subject statistics table with standard deviation.
-- Top-10%-students panel by percentile.
-- Detailed student table with GPA, percentile, attendance, and auto remarks.
-
-## Notes
-
-- This backend uses pure Python CSV/statistics logic to keep setup lightweight and reliable.
-- You can directly demo with `backend/sample_students.csv`.
+- `POST /api/upload` - Upload CSV
+- `POST /api/preprocess` - Run preprocessing
+- `GET /api/customers` - List/filter customers
+- `POST /api/customers` - Add customer
+- `PUT /api/customers/{customer_id}` - Update customer
+- `DELETE /api/customers/{customer_id}` - Delete customer
+- `GET /api/operations/aggregations` - Get avg/sum/min/max
+- `GET /api/operations/quantiles?column=AnnualIncome&q=0.25,0.5,0.75` - Quantiles
+- `GET /api/statistics` - Mean/median/std
+- `POST /api/cluster?clusters=3` - Run KMeans
+- `GET /api/export` - Export processed CSV
